@@ -1,23 +1,20 @@
 package spryrocks.com.tristimer.presentation.ui.screens
 
+import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.view.MenuItem
-import android.widget.FrameLayout
 import spryrocks.com.tristimer.R
+import spryrocks.com.tristimer.databinding.NavigationActivityBinding
 
 class NavigationActivity : AppCompatActivity() {
-    private var content: FrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.navigation_activity)
+        val binding: NavigationActivityBinding = DataBindingUtil.setContentView(this, R.layout.navigation_activity)
 
-        content = findViewById(R.id.content) as FrameLayout
-        val navigation = findViewById<BottomNavigationView>(R.id.navigation)
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        binding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         val fragment = TimerFragment()
         addFragment(fragment)
@@ -51,4 +48,7 @@ class NavigationActivity : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
     }
+
+
+
 }
