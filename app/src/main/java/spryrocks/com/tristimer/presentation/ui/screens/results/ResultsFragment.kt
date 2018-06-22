@@ -1,4 +1,4 @@
-package spryrocks.com.tristimer.presentation.ui.screens
+package spryrocks.com.tristimer.presentation.ui.screens.results
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

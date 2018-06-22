@@ -7,48 +7,55 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import spryrocks.com.tristimer.R
 import spryrocks.com.tristimer.databinding.NavigationActivityBinding
+import android.arch.lifecycle.ViewModelProviders
+import com.spryrocks.android.modules.utils.Actions.Action1
+import spryrocks.com.tristimer.presentation.ui.screens.NavigationModel.MenuItem.*
+import spryrocks.com.tristimer.presentation.ui.screens.results.ResultsFragment
+import spryrocks.com.tristimer.presentation.ui.screens.statistics.StatisticsFragment
+import spryrocks.com.tristimer.presentation.ui.screens.timer.TimerFragment
 
 class NavigationActivity : AppCompatActivity() {
+    private var viewModel: NavigationViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = ViewModelProviders.of(this).get(NavigationViewModel::class.java)
+        this.viewModel = viewModel
+
         val binding: NavigationActivityBinding = DataBindingUtil.setContentView(this, R.layout.navigation_activity)
+        binding.view = this
+        binding.model = viewModel.model
 
-        binding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        viewModel.model.menuItem.addCallback(onMenuItemChanged)
 
-        val fragment = TimerFragment()
-        addFragment(fragment)
+        addFragment(TimerFragment(), false)
     }
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.results_item -> {
-                val fragment = ResultsFragment()
-                addFragment(fragment)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.statistics_item -> {
-                val fragment = StatisticsFragment()
-                addFragment(fragment)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.timer_item -> {
-                val fragment = TimerFragment()
-                addFragment(fragment)
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
+    val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        viewModel!!.model.menuItem.set(when (item.itemId) {
+            R.id.results_item -> RESULTS
+            R.id.statistics_item -> STATISTICS
+            R.id.timer_item -> TIMER
+            else -> null
+        })
+        true
     }
 
-    private fun addFragment(fragment: Fragment) {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content, fragment, null)
-                .addToBackStack(null)
-                .commit()
+    private val onMenuItemChanged = Action1<NavigationModel.MenuItem> { menuItem ->
+        if (menuItem == null)
+            return@Action1
+        addFragment(when (menuItem) {
+            RESULTS -> ResultsFragment()
+            STATISTICS -> StatisticsFragment()
+            TIMER -> TimerFragment()
+        })
     }
 
-
-
+    private fun addFragment(fragment: Fragment, addToBackStack: Boolean = true) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.content, fragment, null)
+        if (addToBackStack)
+            transaction.addToBackStack(null)
+        transaction.commit()
+    }
 }
