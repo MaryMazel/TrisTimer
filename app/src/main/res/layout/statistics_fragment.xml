@@ -2,6 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <import type="spryrocks.com.tristimer.presentation.ui.screens.statistics.StatisticsModel" />
+        <import type="spryrocks.com.tristimer.presentation.ui.utils.Converters" />
+        <variable name="model" type="StatisticsModel" />
+    </data>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,10 +35,11 @@
                 android:id="@+id/best"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.best)}"/>
         </LinearLayout>
 
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -49,7 +55,8 @@
                 android:id="@+id/worst"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.worst)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -68,7 +75,8 @@
                 android:id="@+id/avg5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.avg5)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -87,7 +95,8 @@
                 android:id="@+id/best_avg5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.bestAvg5)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -106,7 +115,8 @@
                 android:id="@+id/avg12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.avg12)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -125,7 +135,8 @@
                 android:id="@+id/best_avg12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.bestAvg12)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -144,7 +155,8 @@
                 android:id="@+id/avg50"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.avg50)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -163,7 +175,8 @@
                 android:id="@+id/best_avg50"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.bestAvg50)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -182,7 +195,8 @@
                 android:id="@+id/avg100"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.avg100)}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -201,8 +215,29 @@
                 android:id="@+id/best_avg100"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.bestAvg100)}"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/best_avg100"/>
+            <TextView
+                android:id="@+id/session_mean"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@{Converters.timeToString(model.sessionMean)}"/>
+        </LinearLayout>-->
 
     </LinearLayout>
 </layout>
