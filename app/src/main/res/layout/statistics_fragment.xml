@@ -39,7 +39,7 @@
                 android:text="@{Converters.timeToString(model.best)}"/>
         </LinearLayout>
 
-        <!--<LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -230,14 +230,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="@string/best_avg100"/>
+                android:text="@string/session_mean"/>
             <TextView
                 android:id="@+id/session_mean"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="@{Converters.timeToString(model.sessionMean)}"/>
-        </LinearLayout>-->
+        </LinearLayout>
 
     </LinearLayout>
 </layout>

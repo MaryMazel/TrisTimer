@@ -13,12 +13,14 @@ import spryrocks.com.tristimer.databinding.StatisticsFragmentBinding;
 
 public class StatisticsFragment extends Fragment {
     public final StatisticsViewModel viewModel = new StatisticsViewModel();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         StatisticsFragmentBinding binding = DataBindingUtil.inflate(inflater, R.layout.statistics_fragment, container, false);
         binding.setModel(viewModel.model);
+
         return binding.getRoot();
     }
 }
