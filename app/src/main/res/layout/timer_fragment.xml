@@ -43,6 +43,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginBottom="156dp"
+                android:onClick="@{model.btStartClick}"
                 android:text="Start"/>
 
             <Button
@@ -53,6 +54,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginBottom="97dp"
+                android:onClick="@{model.btStopClick}"
                 android:text="Stop"/>
 
         </RelativeLayout>

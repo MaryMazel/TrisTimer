@@ -1,5 +1,6 @@
 package spryrocks.com.tristimer.presentation.ui.screens.statistics;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,12 +13,11 @@ import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.databinding.StatisticsFragmentBinding;
 
 public class StatisticsFragment extends Fragment {
-    public final StatisticsViewModel viewModel = new StatisticsViewModel();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        StatisticsViewModel viewModel = ViewModelProviders.of(this).get(StatisticsViewModel.class);
         StatisticsFragmentBinding binding = DataBindingUtil.inflate(inflater, R.layout.statistics_fragment, container, false);
         binding.setModel(viewModel.model);
 
