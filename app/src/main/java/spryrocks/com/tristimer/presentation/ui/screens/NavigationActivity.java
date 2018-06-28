@@ -35,7 +35,6 @@ public class NavigationActivity extends AppCompatActivity {
         viewModel.model.menuItem.addCallback(onMenuItemChanged);
 
         addFragment(new TimerFragment(), false);
-
     }
 
     public final BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

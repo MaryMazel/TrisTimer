@@ -14,12 +14,18 @@ import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.databinding.TimerFragmentBinding;
 
 public class TimerFragment extends Fragment {
+    private TimerViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        viewModel = ViewModelProviders.of(this).get(TimerViewModel.class);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        TimerViewModel viewModel = ViewModelProviders.of(this).get(TimerViewModel.class);
-
         TimerFragmentBinding binding = DataBindingUtil.inflate(inflater, R.layout.timer_fragment, container, false);
         binding.setModel(viewModel.model);
 

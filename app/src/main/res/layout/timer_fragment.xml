@@ -3,8 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="spryrocks.com.tristimer.presentation.ui.screens.timer.TimerModel"/>
+        <import type="spryrocks.com.tristimer.presentation.ui.utils.Converters" />
         <variable name="model"
-            type="spryrocks.com.tristimer.presentation.ui.screens.timer.TimerModel" />
+            type="TimerModel"/>
     </data>
 
     <LinearLayout
@@ -32,7 +34,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="@string/time"
+                android:text="@{Converters.timeToString(model.time)}"
                 android:textColor="@color/colorPrimary"
                 android:textSize="50dp" />
 
