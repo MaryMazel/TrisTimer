@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="spryrocks.com.tristimer.presentation.ui.screens.timer.TimerModel"/>
+
+        <import type="spryrocks.com.tristimer.presentation.ui.screens.timer.TimerModel" />
+
         <import type="spryrocks.com.tristimer.presentation.ui.utils.Converters" />
-        <variable name="model"
-            type="TimerModel"/>
+
+        <variable
+            name="model"
+            type="TimerModel" />
     </data>
 
     <LinearLayout
@@ -19,8 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            app:titleTextColor="@android:color/white"
-            app:title="@string/timer" />
+            app:title="@string/timer"
+            app:titleTextColor="@android:color/white" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,16 +33,28 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/scramble"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center|top"
+                android:lines="50"
+                android:text="@{model.scramble}"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"/>
+
+            <TextView
                 android:id="@+id/timer"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="80dip"
                 android:layout_centerInParent="true"
                 android:gravity="center"
+                android:onClick="@{model.timeClick}"
                 android:singleLine="true"
                 android:text="@{Converters.timeToString(model.time)}"
                 android:textColor="@color/colorPrimary"
-                android:onClick="@{model.timeClick}"
-                android:textSize="50dp" />
+                android:textSize="50sp" />
 
         </RelativeLayout>
 

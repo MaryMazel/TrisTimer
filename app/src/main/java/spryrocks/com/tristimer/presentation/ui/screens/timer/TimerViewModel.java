@@ -3,11 +3,11 @@ package spryrocks.com.tristimer.presentation.ui.screens.timer;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.os.Handler;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
 import spryrocks.com.tristimer.domain.TimerManager;
+import spryrocks.com.tristimer.presentation.ui.utils.ScrambleGenerator;
 
 public class TimerViewModel extends AndroidViewModel {
     public final TimerModel model = new TimerModel();
@@ -17,6 +17,7 @@ public class TimerViewModel extends AndroidViewModel {
     public TimerViewModel(Application application) {
         super(application);
         timerManager = new TimerManager(application);
+        model.scramble.set(ScrambleGenerator.generateScramble());
         model.timeClick.addCallback(this::timeClick);
     }
 
@@ -25,6 +26,7 @@ public class TimerViewModel extends AndroidViewModel {
             mTimer.cancel();
             mTimer = null;
             timerManager.stopTimer();
+            model.scramble.set(ScrambleGenerator.generateScramble());
         } else {
             timerManager.startTimer();
             mTimer = new Timer();
