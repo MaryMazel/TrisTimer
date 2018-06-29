@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">TrisTimer</string>
+    <string name="statistics">Statistics</string>
+    <string name="timer">Timer</string>
+    <string name="results">Results</string>
+    <string name="time">00.00</string>
+    <string name="best">Best:</string>
+    <string name="worst">Worst:</string>
+    <string name="avg5">Avg of 5:</string>
+    <string name="best_avg5">Best avg of 5:</string>
+    <string name="avg12">Avg of 12:</string>
+    <string name="best_avg12">Best avg of 12:</string>
+    <string name="avg50">Avg of 50:</string>
+    <string name="best_avg50">Best avg of 50:</string>
+    <string name="avg100">Avg of 100:</string>
+    <string name="best_avg100">Best avg of 100:</string>
+    <string name="session_mean">Session mean:</string>
 </resources>
