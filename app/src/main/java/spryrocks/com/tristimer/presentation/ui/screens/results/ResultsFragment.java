@@ -30,7 +30,7 @@ public class ResultsFragment extends Fragment {
 
         setInitialData();
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        ResultsAdapter adapter = new ResultsAdapter(requireContext(), results);
+        ResultsAdapter adapter = new ResultsAdapter(results);
         recyclerView.setAdapter(adapter);
         return view;
     }
