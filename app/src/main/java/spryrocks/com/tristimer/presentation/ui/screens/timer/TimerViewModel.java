@@ -26,7 +26,8 @@ public class TimerViewModel extends AndroidViewModel {
             mTimer.cancel();
             mTimer = null;
             timerManager.stopTimer();
-            model.scramble.set(ScrambleGenerator.generateScramble());
+            String scramble = ScrambleGenerator.generateScramble();
+            model.scramble.set(scramble);
         } else {
             timerManager.startTimer();
             mTimer = new Timer();

@@ -12,14 +12,15 @@ import android.widget.TextView;
 import java.util.List;
 
 import spryrocks.com.tristimer.R;
+import spryrocks.com.tristimer.data.Result;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsViewHolder> {
     @Nullable
-    private List<String> results;
+    private List<Result> results;
 
     private final LayoutInflater inflater;
 
-    public ResultsAdapter(@NonNull Context context, @Nullable List<String> results) {
+    ResultsAdapter(@NonNull Context context, @Nullable List<Result> results) {
         this.results = results;
         this.inflater = LayoutInflater.from(context);
     }
@@ -37,7 +38,8 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
         if (results == null)
             throw new RuntimeException("results should not be null");
 
-        holder.text.setText(results.get(position));
+        Result result = results.get(position);
+        holder.text.setText(result.getTime() + result.getScramble() + result.getDate());
     }
 
     @Override
