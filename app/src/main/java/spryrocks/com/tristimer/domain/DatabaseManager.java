@@ -13,7 +13,7 @@ import spryrocks.com.tristimer.data.Result;
 public class DatabaseManager {
     private AppDatabase database;
 
-    private DatabaseManager(@NonNull Context context) {
+    public DatabaseManager(@NonNull Context context) {
         database = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "timer_database")
                 .allowMainThreadQueries()
                 .build();
@@ -25,5 +25,9 @@ public class DatabaseManager {
 
     public List<Result> getAllResults() {
         return database.resultDao().getAllResults();
+    }
+
+    public void insertResult(Result result){
+        database.resultDao().insertAll(result);
     }
 }
