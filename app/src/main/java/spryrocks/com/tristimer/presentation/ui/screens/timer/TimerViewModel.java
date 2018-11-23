@@ -14,6 +14,7 @@ import java.util.TimerTask;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.domain.TimerManager;
+import spryrocks.com.tristimer.presentation.ui.utils.Converters;
 import spryrocks.com.tristimer.presentation.ui.utils.ScrambleGenerator;
 
 public class TimerViewModel extends AndroidViewModel {
@@ -62,7 +63,7 @@ public class TimerViewModel extends AndroidViewModel {
     }
 
     private void saveResult() {
-        Result result = new Result(model.time.toString(), model.scramble.toString(), getCurrentDate());
+        Result result = new Result(Converters.timeToString(model.time.get()), model.scramble.get(), getCurrentDate());
         databaseManager.insertResult(result);
     }
 
