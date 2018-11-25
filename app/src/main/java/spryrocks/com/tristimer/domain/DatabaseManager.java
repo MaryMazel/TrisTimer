@@ -9,6 +9,7 @@ import java.util.List;
 
 import spryrocks.com.tristimer.data.AppDatabase;
 import spryrocks.com.tristimer.data.Result;
+import spryrocks.com.tristimer.presentation.ui.screens.results.ResultsAdapter;
 
 public class DatabaseManager {
     private AppDatabase database;
@@ -29,5 +30,15 @@ public class DatabaseManager {
 
     public void insertResult(Result result){
         database.resultDao().insertAll(result);
+    }
+
+    public void deleteSelectedResults(List<Result> results) {
+        for (Result result : results) {
+            database.resultDao().deleteSelectedResults(result.getId());
+        }
+    }
+
+    public void clearSession() {
+        database.resultDao().clearSession();
     }
 }

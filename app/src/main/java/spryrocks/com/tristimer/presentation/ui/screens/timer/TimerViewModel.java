@@ -6,7 +6,6 @@ import android.os.Handler;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,6 +18,7 @@ import spryrocks.com.tristimer.presentation.ui.utils.ScrambleGenerator;
 
 public class TimerViewModel extends AndroidViewModel {
     public final TimerModel model = new TimerModel();
+
     private TimerManager timerManager;
     private DatabaseManager databaseManager;
     private Timer mTimer;

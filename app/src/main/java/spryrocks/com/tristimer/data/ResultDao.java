@@ -13,4 +13,10 @@ public interface ResultDao {
 
     @Insert
     void insertAll(Result... results);
+
+    @Query("DELETE FROM result WHERE id = :resultID")
+    void deleteSelectedResults(int resultID);
+
+    @Query("DELETE FROM RESULT")
+    void clearSession();
 }
