@@ -47,4 +47,6 @@ dependencies {
 
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
+
+    implementation 'com.jjoe64:graphview:4.2.2'
 }
