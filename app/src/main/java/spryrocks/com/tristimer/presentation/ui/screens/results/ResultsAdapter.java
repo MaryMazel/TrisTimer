@@ -14,6 +14,8 @@ import java.util.List;
 
 import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.data.Result;
+import spryrocks.com.tristimer.presentation.ui.utils.Converters;
+import spryrocks.com.tristimer.presentation.ui.utils.Formatters;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHolder> {
     private List<ResultItem> resultItems;
@@ -49,9 +51,9 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
 
         holder.resultItem = resultItem;
 
-        holder.time.setText(resultItem.result.getTime());
+        holder.time.setText(Converters.timeToString(resultItem.result.getTime()));
         holder.scramble.setText(resultItem.result.getScramble());
-        holder.date.setText(resultItem.result.getDate());
+        holder.date.setText(Formatters.formatDate(Converters.timestampToDate(resultItem.result.getDate())));
         holder.view.setBackgroundColor(resultItem.isSelected() ? Color.parseColor("#6501579B"): Color.TRANSPARENT);
     }
 

@@ -9,79 +9,110 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
+import spryrocks.com.tristimer.presentation.ui.utils.Converters;
+import spryrocks.com.tristimer.presentation.ui.utils.DateAxisValueFormatter;
+import spryrocks.com.tristimer.presentation.ui.utils.Formatters;
+import spryrocks.com.tristimer.presentation.ui.utils.YAxisValueFormatter;
 
 public class StatisticsFragment extends Fragment {
-    private DatabaseManager databaseManager;
+    private Long referenceTimestamp;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        /*StatisticsFragmentBinding binding = DataBindingUtil.inflate(inflater, R.layout.statistics_fragment, container, false);
-        binding.setModel(viewModel.model);*/
         View view = inflater.inflate(R.layout.statistics_graph, container, false);
 
-        databaseManager = new DatabaseManager(this);
-        GraphView graph = view.findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(getDataToGraph());
-        graph.addSeries(series);
+        DatabaseManager databaseManager = new DatabaseManager(this);
 
-        series.setColor(Color.parseColor("#01579b"));
-        series.setDrawDataPoints(true);
-        series.setDataPointsRadius(8);
-        series.setThickness(4);
+        List<Result> results = databaseManager.getAllResults();
 
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(2); // only 4 because of the space
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getGridLabelRenderer().setHumanRounding(false);
+        LineChart lineChart = view.findViewById(R.id.line_chart);
+        Description description = new Description();
+        description.setText("Session Chart");
+        lineChart.setDescription(description);
 
-        graph.getViewport().setScalable(true);
+        lineChart.setPinchZoom(true);
+        lineChart.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        lineChart.getLegend().setTextColor(Color.WHITE);
+        lineChart.setViewPortOffsets(8f, 8f, 8f, 70f);
 
+        List<Entry> entries = getEntries(results);
+        LineDataSet dataSet = new LineDataSet(entries, "Session");
+        dataSet.setColor(Color.WHITE);
+        dataSet.setCircleRadius(5);
+        dataSet.setCircleColor(getResources().getColor(R.color.colorAccent));
+        dataSet.setValueTextColor(Color.YELLOW);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setAxisLineColor(Color.YELLOW);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setValueFormatter(new DateAxisValueFormatter(referenceTimestamp));
+
+        YAxis yAxis = lineChart.getAxisLeft();
+        yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        yAxis.setValueFormatter(new YAxisValueFormatter());
+        yAxis.setAxisLineColor(Color.YELLOW);
+        yAxis.setTextColor(Color.WHITE);
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        lineChart.invalidate();
         return view;
     }
 
-    private DataPoint[] getDataToGraph() {
-        List<Result> results = databaseManager.getAllResults();
-        DataPoint dataPoint[] = new DataPoint[results.size()];
+    public List<String> getXLabels(List<Result> results) {
+        List<String> dates = new ArrayList<>();
+        for (Result result : results) {
+            dates.add(Formatters.formatDate(Converters.timestampToDate(result.getDate())));
+        }
+        return dates;
+    }
+
+    public List<Entry> getEntries(List<Result> results) {
+        List<Entry> entries = new ArrayList<>();
+        List<Long> dates = minifyTimestamps(getDates(results));
         for (int i = 0; i < results.size(); i++) {
-            dataPoint[i] = new DataPoint(convertToDate(results.get(i).getDate()), convertToDouble(results.get(i).getTime()));
+            entries.add(new Entry((float) dates.get(i), Converters.timeToFloat(results.get(i).getTime())));
         }
-        return dataPoint;
+        return entries;
     }
 
-    private Double convertToDouble(String result) {
-        Double time = null;
-        try {
-            time = Double.parseDouble(result);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public List<Long> getDates(List<Result> results) {
+        List<Long> dates = new ArrayList<>();
+        for (Result result : results) {
+            dates.add(result.getDate());
         }
-        return time;
+        return dates;
     }
 
-    private Date convertToDate(String dateString){
-        Locale locale = new Locale("uk");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM", locale);
-        Date convertedDate = new Date();
-        try {
-            convertedDate = dateFormat.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public List<Long> minifyTimestamps(List<Long> timestamps) {
+        List<Long> newTs = new ArrayList<>();
+        referenceTimestamp = Collections.min(timestamps);
+        for (Long timestamp : timestamps) {
+            newTs.add(timestamp - referenceTimestamp);
         }
-        return convertedDate;
+        return newTs;
     }
 }
+
