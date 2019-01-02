@@ -53,7 +53,7 @@ public class StatisticsFragment extends Fragment {
         lineChart.setPinchZoom(true);
         lineChart.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         lineChart.getLegend().setTextColor(Color.WHITE);
-        lineChart.setViewPortOffsets(8f, 8f, 8f, 70f);
+        lineChart.setViewPortOffsets(10f, 8f, 10f, 70f);
 
         List<Entry> entries = getEntries(results);
         LineDataSet dataSet = new LineDataSet(entries, "Session");
@@ -68,6 +68,7 @@ public class StatisticsFragment extends Fragment {
         xAxis.setAxisLineColor(Color.YELLOW);
         xAxis.setTextColor(Color.WHITE);
         xAxis.setValueFormatter(new DateAxisValueFormatter(referenceTimestamp));
+        xAxis.setAvoidFirstLastClipping(true);
 
         YAxis yAxis = lineChart.getAxisLeft();
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);

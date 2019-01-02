@@ -29,6 +29,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{model.timeClick}"
             android:orientation="vertical">
 
             <TextView
@@ -49,7 +52,6 @@
                 android:layout_height="80dip"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:onClick="@{model.timeClick}"
                 android:singleLine="true"
                 android:text="@{Converters.timeToString(model.timerTime)}"
                 android:textColor="@color/colorPrimary"

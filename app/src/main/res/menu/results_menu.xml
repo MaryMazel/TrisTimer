@@ -9,4 +9,8 @@
         android:id="@+id/clearSelected"
         android:title="Clear selected" />
 
+    <item
+        android:id="@+id/save_as_pdf"
+        android:title="Save as PDF" />
+
 </menu>

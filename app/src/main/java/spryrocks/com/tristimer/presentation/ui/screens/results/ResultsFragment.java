@@ -1,9 +1,11 @@
 package spryrocks.com.tristimer.presentation.ui.screens.results;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.print.PrintHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -11,10 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
+import spryrocks.com.tristimer.presentation.ui.utils.Converters;
+import spryrocks.com.tristimer.presentation.ui.utils.Formatters;
+import spryrocks.com.tristimer.presentation.ui.utils.PrintBitmapBuilder;
 
 public class ResultsFragment extends Fragment {
     private ResultsAdapter adapter;
@@ -47,6 +53,9 @@ public class ResultsFragment extends Fragment {
                 case R.id.clearSelected:
                     deleteSelectedItems();
                     break;
+                case R.id.save_as_pdf:
+                    print();
+                    break;
             }
             return true;
         });
@@ -63,6 +72,7 @@ public class ResultsFragment extends Fragment {
 
     private void loadData() {
         List<Result> results = databaseManager.getAllResults();
+        Collections.reverse(results);
         List<ResultsAdapter.ResultItem> resultItems = convertToResultItems(results);
         adapter.setItems(resultItems);
     }
@@ -79,5 +89,27 @@ public class ResultsFragment extends Fragment {
         databaseManager.deleteSelectedResults(results);
 
         loadData();
+    }
+
+    public void print() {
+        Context context = requireContext();
+
+        @Nullable List<Result> results = databaseManager.getAllResults();
+        if (results == null)
+            return;
+
+        PrintBitmapBuilder builder = new PrintBitmapBuilder(context);
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("My 3 by 3 results" + "\n\n");
+        for (int i = 0; i < results.size(); i++) {
+            sb.append(i + 1).append(". ").append(Converters.timeToString(results.get(i).getTime())).append("  ").append(results.get(i).getScramble()).append("  ").append(Formatters.formatDate(results.get(i).getDate())).append("\n");
+        }
+
+        builder.setTextAlign(PrintBitmapBuilder.ReceiptTextAlign.LEFT);
+        builder.appendString(sb.toString());
+
+        PrintHelper printHelper = new PrintHelper(context);
+        printHelper.printBitmap("Print", builder.build());
     }
 }
