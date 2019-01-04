@@ -19,4 +19,10 @@ public interface ResultDao {
 
     @Query("DELETE FROM RESULT")
     void clearSession();
+
+    @Query("UPDATE result SET time = null WHERE id = :resultID")
+    void setPenaltyDNF(int resultID);
+
+    @Query("UPDATE result SET time = time + 2000 WHERE id = :resultID")
+    void setPenaltyPlusTwo(int resultID);
 }

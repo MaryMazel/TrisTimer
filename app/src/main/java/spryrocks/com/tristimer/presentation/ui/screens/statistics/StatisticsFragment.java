@@ -85,7 +85,8 @@ public class StatisticsFragment extends Fragment {
     public List<String> getXLabels(List<Result> results) {
         List<String> dates = new ArrayList<>();
         for (Result result : results) {
-            dates.add(Formatters.formatDate(Converters.timestampToDate(result.getDate())));
+            if (result.getTime() != null)
+                dates.add(Formatters.formatDate(Converters.timestampToDate(result.getDate())));
         }
         return dates;
     }
@@ -94,6 +95,7 @@ public class StatisticsFragment extends Fragment {
         List<Entry> entries = new ArrayList<>();
         List<Long> dates = minifyTimestamps(getDates(results));
         for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).getTime() != null)
             entries.add(new Entry((float) dates.get(i), Converters.timeToFloat(results.get(i).getTime())));
         }
         return entries;

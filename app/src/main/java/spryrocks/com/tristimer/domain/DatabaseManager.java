@@ -38,7 +38,19 @@ public class DatabaseManager {
         }
     }
 
+    public void deleteLastResult(Result result) {
+        database.resultDao().deleteSelectedResults(result.getId());
+    }
+
     public void clearSession() {
         database.resultDao().clearSession();
+    }
+
+    public void setPenaltyDNF(Result result) {
+        database.resultDao().setPenaltyDNF(result.getId());
+    }
+
+    public void setPenaltyPlusTwo(Result result){
+        database.resultDao().setPenaltyPlusTwo(result.getId());
     }
 }

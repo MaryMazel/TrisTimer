@@ -7,6 +7,7 @@ import android.os.Handler;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,6 +30,24 @@ public class TimerViewModel extends AndroidViewModel {
         databaseManager = new DatabaseManager(application);
         model.scramble.set(ScrambleGenerator.generateScramble());
         model.timeClick.addCallback(this::timeClick);
+        model.deleteClick.addCallback(this::deleteClick);
+        model.dnfClick.addCallback(this::dnfClick);
+        model.plusTwoClick.addCallback(this::plusTwoClick);
+    }
+
+    private void deleteClick() {
+        List<Result> results = databaseManager.getAllResults();
+        databaseManager.deleteLastResult(results.get(results.size() - 1));
+    }
+
+    private void dnfClick() {
+        List<Result> results = databaseManager.getAllResults();
+        databaseManager.setPenaltyDNF(results.get(results.size() - 1));
+    }
+
+    private void plusTwoClick() {
+        List<Result> results = databaseManager.getAllResults();
+        databaseManager.setPenaltyPlusTwo(results.get(results.size() - 1));
     }
 
     private void timeClick() {
