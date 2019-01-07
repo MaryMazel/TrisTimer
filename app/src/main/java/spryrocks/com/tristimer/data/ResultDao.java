@@ -8,8 +8,8 @@ import java.util.List;
 
 @Dao
 public interface ResultDao {
-    @Query("SELECT * FROM result")
-    List<Result> getAllResults();
+    @Query("SELECT * FROM result WHERE `Discipline id` = :discipline")
+    List<Result> getAllResults(int discipline);
 
     @Insert
     void insertAll(Result... results);

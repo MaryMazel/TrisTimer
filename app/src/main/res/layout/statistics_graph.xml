@@ -11,11 +11,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:titleTextColor="@android:color/white"
-        app:title="@string/statistics" />
+        app:title="@string/statistics" >
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_chart"
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_statistics"
+            android:layout_marginEnd="10dp"
+            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:layout_gravity="end" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/no_results_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="You have no results yet"
+            android:visibility="invisible"/>
+    </FrameLayout>
+
 </LinearLayout>

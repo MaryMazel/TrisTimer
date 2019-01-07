@@ -3,15 +3,15 @@ package spryrocks.com.tristimer.presentation.ui.screens.timer;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.domain.TimerManager;
@@ -28,6 +28,7 @@ public class TimerViewModel extends AndroidViewModel {
         super(application);
         timerManager = new TimerManager(application);
         databaseManager = new DatabaseManager(application);
+
         model.scramble.set(ScrambleGenerator.generateScramble());
         model.timeClick.addCallback(this::timeClick);
         model.deleteClick.addCallback(this::deleteClick);
@@ -36,17 +37,26 @@ public class TimerViewModel extends AndroidViewModel {
     }
 
     private void deleteClick() {
-        List<Result> results = databaseManager.getAllResults();
+        Discipline selectedDiscipline = model.selectedDiscipline;
+        if (selectedDiscipline == null)
+            return;
+        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
         databaseManager.deleteLastResult(results.get(results.size() - 1));
     }
 
     private void dnfClick() {
-        List<Result> results = databaseManager.getAllResults();
+        Discipline selectedDiscipline = model.selectedDiscipline;
+        if (selectedDiscipline == null)
+            return;
+        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
         databaseManager.setPenaltyDNF(results.get(results.size() - 1));
     }
 
     private void plusTwoClick() {
-        List<Result> results = databaseManager.getAllResults();
+        Discipline selectedDiscipline = model.selectedDiscipline;
+        if (selectedDiscipline == null)
+            return;
+        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
         databaseManager.setPenaltyPlusTwo(results.get(results.size() - 1));
     }
 
@@ -69,7 +79,6 @@ public class TimerViewModel extends AndroidViewModel {
         mTimer.cancel();
         mTimer = null;
         timerManager.stopTimer();
-        //model.time.set(Converters.timeToString(model.timerTime.get()));
         saveResult();
 
         String scramble = ScrambleGenerator.generateScramble();
@@ -81,13 +90,25 @@ public class TimerViewModel extends AndroidViewModel {
     }
 
     private void saveResult() {
-        Result result = new Result(model.timerTime.get(), model.scramble.get(), getCurrentDate().getTime());
+        Discipline selectedDiscipline = model.selectedDiscipline;
+        if (selectedDiscipline == null)
+            return;
+        Result result = new Result(model.timerTime.get(), model.scramble.get(), getCurrentDate().getTime(), selectedDiscipline.getId());
         databaseManager.insertResult(result);
+    }
+
+    List<Discipline> getDataForSpinner() {
+        return databaseManager.getAllDisciplines();
+    }
+
+    void setSelectDiscipline(@NonNull Discipline discipline) {
+        model.selectedDiscipline = discipline;
     }
 
     class MyTimerTask extends TimerTask {
         private final Handler handler = new Handler();
         private long startTime = timerManager.getTime();
+
         @Override
         public void run() {
             long time = System.currentTimeMillis() - startTime;

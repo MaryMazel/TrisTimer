@@ -2,11 +2,12 @@ package spryrocks.com.tristimer.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.Date;
-
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = Result.class,
+                                    parentColumns = "id",
+                                    childColumns = "Discipline id"))
 public class Result {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -20,10 +21,14 @@ public class Result {
     @ColumnInfo(name = "date")
     private long date;
 
-    public Result(Long time, String scramble, long date) {
+    @ColumnInfo(name = "Discipline id")
+    private int discipline;
+
+    public Result(Long time, String scramble, long date, int discipline) {
         this.time = time;
         this.scramble = scramble;
         this.date = date;
+        this.discipline = discipline;
     }
 
     public int getId() {
@@ -44,5 +49,13 @@ public class Result {
 
     public long getDate() {
         return date;
+    }
+
+    public int getDiscipline() {
+        return discipline;
+    }
+
+    public void setDiscipline(int discipline) {
+        this.discipline = discipline;
     }
 }

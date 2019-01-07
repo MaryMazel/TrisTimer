@@ -11,11 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import spryrocks.com.tristimer.R;
+import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.presentation.ui.utils.Converters;
@@ -24,23 +28,35 @@ import spryrocks.com.tristimer.presentation.ui.utils.PrintBitmapBuilder;
 
 public class ResultsFragment extends Fragment {
     private ResultsAdapter adapter;
-
+    List<Discipline> disciplines;
+    @Nullable Discipline selectedDiscipline;
     DatabaseManager databaseManager;
+    Spinner spinner;
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.results_fragment, container, false);
-
+        databaseManager = new DatabaseManager(this);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
         adapter = new ResultsAdapter();
 
         recyclerView.setAdapter(adapter);
+        spinner = view.findViewById(R.id.spinner_results);
+        initializeSpinner();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                setSelectedDiscipline(disciplines.get(position));
+            }
 
-        databaseManager = new DatabaseManager(this);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        loadData();
+            }
+        });
 
         Toolbar toolbar = view.findViewById(R.id.toolbar_results);
         toolbar.inflateMenu(R.menu.results_menu);
@@ -59,6 +75,7 @@ public class ResultsFragment extends Fragment {
             }
             return true;
         });
+
         return view;
     }
 
@@ -71,30 +88,54 @@ public class ResultsFragment extends Fragment {
     }
 
     private void loadData() {
-        List<Result> results = databaseManager.getAllResults();
+        Discipline selectedDiscipline = this.selectedDiscipline;
+        List<Result> results;
+        if (selectedDiscipline != null) {
+            results = databaseManager.getAllResults(selectedDiscipline.getId());
+        } else {
+            results = new ArrayList<>();
+        }
         Collections.reverse(results);
         List<ResultsAdapter.ResultItem> resultItems = convertToResultItems(results);
         adapter.setItems(resultItems);
     }
 
+    private void setSelectedDiscipline(Discipline discipline) {
+        this.selectedDiscipline = discipline;
+        loadData();
+    }
+
     private void deleteSelectedItems() {
         List<Result> results = new ArrayList<>();
-
         for (ResultsAdapter.ResultItem item : adapter.getItems()) {
             if (item.selected) {
                 results.add(item.result);
             }
         }
-
         databaseManager.deleteSelectedResults(results);
 
         loadData();
     }
 
+    private void initializeSpinner() {
+        disciplines = databaseManager.getAllDisciplines();
+        List<String> data = new ArrayList<>();
+        for (Discipline discipline : disciplines) {
+            data.add(discipline.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.disciplines_spinner_item, data.toArray(new String[0]));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+    }
+
     public void print() {
         Context context = requireContext();
 
-        @Nullable List<Result> results = databaseManager.getAllResults();
+        Discipline selectedDiscipline = this.selectedDiscipline;
+        if (selectedDiscipline == null)
+            return;
+        @Nullable List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
         if (results == null)
             return;
 

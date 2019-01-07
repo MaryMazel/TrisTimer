@@ -8,6 +8,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -26,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import spryrocks.com.tristimer.R;
+import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.presentation.ui.utils.Converters;
@@ -35,17 +40,104 @@ import spryrocks.com.tristimer.presentation.ui.utils.YAxisValueFormatter;
 
 public class StatisticsFragment extends Fragment {
     private Long referenceTimestamp;
+    DatabaseManager databaseManager;
+    private List<Discipline> disciplines;
+    private Spinner spinner;
+    @Nullable private Discipline selectedDiscipline;
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.statistics_graph, container, false);
+        view = inflater.inflate(R.layout.statistics_graph, container, false);
 
-        DatabaseManager databaseManager = new DatabaseManager(this);
+        databaseManager = new DatabaseManager(this);
 
-        List<Result> results = databaseManager.getAllResults();
+        spinner = view.findViewById(R.id.spinner_statistics);
+        initializeSpinner();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                setSelectedDiscipline(disciplines.get(position));
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        return view;
+    }
+
+    public List<String> getXLabels(List<Result> results) {
+        List<String> dates = new ArrayList<>();
+        for (Result result : results) {
+            if (result.getTime() != null)
+                dates.add(Formatters.formatDate(Converters.timestampToDate(result.getDate())));
+        }
+        return dates;
+    }
+
+    public List<Entry> getEntries(List<Result> results) {
+        if (results.size() == 0)
+            return new ArrayList<>();
+        List<Entry> entries = new ArrayList<>();
+        List<Long> dates = minifyTimestamps(getDates(results));
+        for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).getTime() != null)
+            entries.add(new Entry((float) dates.get(i), Converters.timeToFloat(results.get(i).getTime())));
+        }
+        return entries;
+    }
+
+    public List<Long> getDates(List<Result> results) {
+        List<Long> dates = new ArrayList<>();
+        for (Result result : results) {
+            dates.add(result.getDate());
+        }
+        return dates;
+    }
+
+    public List<Long> minifyTimestamps(List<Long> timestamps) {
+        List<Long> newTs = new ArrayList<>();
+        referenceTimestamp = Collections.min(timestamps);
+        for (Long timestamp : timestamps) {
+            newTs.add(timestamp - referenceTimestamp);
+        }
+        return newTs;
+    }
+
+    private void initializeSpinner() {
+        disciplines = databaseManager.getAllDisciplines();
+        List<String> data = new ArrayList<>();
+        for (Discipline discipline : disciplines) {
+            data.add(discipline.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.disciplines_spinner_item, data.toArray(new String[0]));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+    }
+
+    private void setSelectedDiscipline(Discipline discipline) {
+        if (discipline == null)
+            return;
+        selectedDiscipline = discipline;
+        Discipline selectedDiscipline = this.selectedDiscipline;
+
+        TextView textView = view.findViewById(R.id.no_results_text);
         LineChart lineChart = view.findViewById(R.id.line_chart);
+
+        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
+        if (results.size() == 0) {
+            lineChart.setVisibility(View.INVISIBLE);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            lineChart.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.INVISIBLE);
+        }
+
         Description description = new Description();
         description.setText("Session Chart");
         lineChart.setDescription(description);
@@ -79,43 +171,6 @@ public class StatisticsFragment extends Fragment {
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
         lineChart.invalidate();
-        return view;
-    }
-
-    public List<String> getXLabels(List<Result> results) {
-        List<String> dates = new ArrayList<>();
-        for (Result result : results) {
-            if (result.getTime() != null)
-                dates.add(Formatters.formatDate(Converters.timestampToDate(result.getDate())));
-        }
-        return dates;
-    }
-
-    public List<Entry> getEntries(List<Result> results) {
-        List<Entry> entries = new ArrayList<>();
-        List<Long> dates = minifyTimestamps(getDates(results));
-        for (int i = 0; i < results.size(); i++) {
-            if (results.get(i).getTime() != null)
-            entries.add(new Entry((float) dates.get(i), Converters.timeToFloat(results.get(i).getTime())));
-        }
-        return entries;
-    }
-
-    public List<Long> getDates(List<Result> results) {
-        List<Long> dates = new ArrayList<>();
-        for (Result result : results) {
-            dates.add(result.getDate());
-        }
-        return dates;
-    }
-
-    public List<Long> minifyTimestamps(List<Long> timestamps) {
-        List<Long> newTs = new ArrayList<>();
-        referenceTimestamp = Collections.min(timestamps);
-        for (Long timestamp : timestamps) {
-            newTs.add(timestamp - referenceTimestamp);
-        }
-        return newTs;
     }
 }
 

@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import java.util.List;
 
 import spryrocks.com.tristimer.data.AppDatabase;
+import spryrocks.com.tristimer.data.DatabaseInitializer;
+import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.presentation.ui.screens.results.ResultsAdapter;
 
@@ -15,22 +17,25 @@ public class DatabaseManager {
     private AppDatabase database;
 
     public DatabaseManager(@NonNull Context context) {
-        database = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "timer_database")
-                .allowMainThreadQueries()
-                .build();
+        database = DatabaseInitializer.createDatabase(context);
     }
 
     public DatabaseManager(@NonNull Fragment fragment) {
         this(fragment.requireContext());
     }
 
-    public List<Result> getAllResults() {
-        return database.resultDao().getAllResults();
+    public List<Result> getAllResults(int discipline) {
+        return database.resultDao().getAllResults(discipline);
+    }
+
+    public List<Discipline> getAllDisciplines() {
+        return database.disciplineDao().getAllDisciplines();
     }
 
     public void insertResult(Result result){
         database.resultDao().insertAll(result);
     }
+
 
     public void deleteSelectedResults(List<Result> results) {
         for (Result result : results) {

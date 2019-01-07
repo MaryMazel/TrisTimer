@@ -24,8 +24,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:title="@string/timer"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@android:color/white" >
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:layout_marginEnd="10dp"
+                android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_gravity="end"
+                />
+
+        </android.support.v7.widget.Toolbar>
 
         <TextView
             android:id="@+id/scramble"
