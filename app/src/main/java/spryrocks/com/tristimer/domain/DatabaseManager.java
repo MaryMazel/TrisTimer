@@ -36,7 +36,6 @@ public class DatabaseManager {
         database.resultDao().insertAll(result);
     }
 
-
     public void deleteSelectedResults(List<Result> results) {
         for (Result result : results) {
             database.resultDao().deleteSelectedResults(result.getId());
@@ -51,11 +50,11 @@ public class DatabaseManager {
         database.resultDao().clearSession();
     }
 
-    public void setPenaltyDNF(Result result) {
-        database.resultDao().setPenaltyDNF(result.getId());
+    public void setPenaltyDNF(Result result, Result.Penalty penalty) {
+        database.resultDao().setPenaltyDNF(result.getId(), penalty);
     }
 
-    public void setPenaltyPlusTwo(Result result){
-        database.resultDao().setPenaltyPlusTwo(result.getId());
+    public void setPenaltyPlusTwo(Result result, Result.Penalty penalty){
+        database.resultDao().setPenaltyPlusTwo(result.getId(), penalty);
     }
 }

@@ -142,7 +142,7 @@ public class ResultsFragment extends Fragment {
         PrintBitmapBuilder builder = new PrintBitmapBuilder(context);
         StringBuilder sb = new StringBuilder();
 
-        sb.append("My 3 by 3 results" + "\n\n");
+        sb.append("My ").append(selectedDiscipline.getName()).append(" results").append("\n\n");
         for (int i = 0; i < results.size(); i++) {
             sb.append(i + 1).append(". ").append(Converters.timeToString(results.get(i).getTime())).append("  ").append(results.get(i).getScramble()).append("  ").append(Formatters.formatDate(results.get(i).getDate())).append("\n");
         }

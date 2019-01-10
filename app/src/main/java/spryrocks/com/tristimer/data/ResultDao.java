@@ -3,6 +3,7 @@ package spryrocks.com.tristimer.data;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.TypeConverters;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public interface ResultDao {
     List<Result> getAllResults(int discipline);
 
     @Insert
+    @TypeConverters(EnumConverter.class)
     void insertAll(Result... results);
 
     @Query("DELETE FROM result WHERE id = :resultID")
@@ -20,9 +22,11 @@ public interface ResultDao {
     @Query("DELETE FROM RESULT")
     void clearSession();
 
-    @Query("UPDATE result SET time = null WHERE id = :resultID")
-    void setPenaltyDNF(int resultID);
+    @Query("UPDATE result SET time = null, penalty = :penalty WHERE id = :resultID")
+    @TypeConverters(EnumConverter.class)
+    void setPenaltyDNF(int resultID, Result.Penalty penalty);
 
-    @Query("UPDATE result SET time = time + 2000 WHERE id = :resultID")
-    void setPenaltyPlusTwo(int resultID);
+    @Query("UPDATE result SET time = time + 2000, penalty = :penalty WHERE id = :resultID")
+    @TypeConverters(EnumConverter.class)
+    void setPenaltyPlusTwo(int resultID, Result.Penalty penalty);
 }

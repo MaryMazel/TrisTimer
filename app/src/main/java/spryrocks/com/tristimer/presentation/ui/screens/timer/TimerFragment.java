@@ -30,6 +30,7 @@ public class TimerFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         viewModel = ViewModelProviders.of(this).get(TimerViewModel.class);
+        viewModel.activity = getActivity();
     }
 
     @Nullable
@@ -52,6 +53,12 @@ public class TimerFragment extends Fragment {
             }
         });
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        viewModel.activity = null;
     }
 
     private void initializeSpinner() {

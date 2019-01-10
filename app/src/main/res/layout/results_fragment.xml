@@ -13,7 +13,7 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:titleTextColor="@android:color/white"
-        app:title="@string/statistics" >
+        app:title="@string/results" >
 
         <Spinner
             android:layout_width="wrap_content"

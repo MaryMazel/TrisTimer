@@ -1,9 +1,12 @@
 package spryrocks.com.tristimer.presentation.ui.screens.timer;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +26,8 @@ public class TimerViewModel extends AndroidViewModel {
     private TimerManager timerManager;
     private DatabaseManager databaseManager;
     private Timer mTimer;
+    @Nullable
+    public Activity activity;
 
     public TimerViewModel(Application application) {
         super(application);
@@ -49,7 +54,13 @@ public class TimerViewModel extends AndroidViewModel {
         if (selectedDiscipline == null)
             return;
         List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
-        databaseManager.setPenaltyDNF(results.get(results.size() - 1));
+        Result result = results.get(results.size() - 1);
+        if (result.getPenalty() == Result.Penalty.PENALTY_OK) {
+            databaseManager.setPenaltyDNF(result, Result.Penalty.PENALTY_DNF);
+        } else {
+            showPenaltyError();
+        }
+
     }
 
     private void plusTwoClick() {
@@ -57,7 +68,25 @@ public class TimerViewModel extends AndroidViewModel {
         if (selectedDiscipline == null)
             return;
         List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
-        databaseManager.setPenaltyPlusTwo(results.get(results.size() - 1));
+        Result result = results.get(results.size() - 1);
+        if (result.getPenalty() == Result.Penalty.PENALTY_OK) {
+            databaseManager.setPenaltyPlusTwo(result, Result.Penalty.PENALTY_PLUSTWO);
+        } else {
+            showPenaltyError();
+        }
+    }
+
+    public void showPenaltyError() {
+        Activity act = activity;
+        if (act != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(act);
+            builder.setMessage("You cannot set penalty twice")
+                    .setTitle("Penalty Error")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", null);
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     private void timeClick() {
@@ -93,7 +122,11 @@ public class TimerViewModel extends AndroidViewModel {
         Discipline selectedDiscipline = model.selectedDiscipline;
         if (selectedDiscipline == null)
             return;
-        Result result = new Result(model.timerTime.get(), model.scramble.get(), getCurrentDate().getTime(), selectedDiscipline.getId());
+        Result result = new Result(model.timerTime.get(),
+                                    model.scramble.get(),
+                                    getCurrentDate().getTime(),
+                                    selectedDiscipline.getId(),
+                                    Result.Penalty.PENALTY_OK);
         databaseManager.insertResult(result);
     }
 

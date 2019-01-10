@@ -16,7 +16,7 @@ public class Converters {
             else
                 return String.format(Locale.US, "%02d.%02d", second, millis);
         } else {
-            return "DNF";
+            return "00.00";
         }
     }
 
