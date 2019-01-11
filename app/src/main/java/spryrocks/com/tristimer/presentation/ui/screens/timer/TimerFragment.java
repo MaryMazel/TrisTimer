@@ -46,6 +46,7 @@ public class TimerFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Discipline discipline= disciplines.get(position);
                 viewModel.setSelectDiscipline(discipline);
+                viewModel.setScramble();
             }
 
             @Override
@@ -71,6 +72,5 @@ public class TimerFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
-
     }
 }

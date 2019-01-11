@@ -1,6 +1,5 @@
 package spryrocks.com.tristimer.domain;
 
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import spryrocks.com.tristimer.data.AppDatabase;
 import spryrocks.com.tristimer.data.DatabaseInitializer;
 import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
-import spryrocks.com.tristimer.presentation.ui.screens.results.ResultsAdapter;
 
 public class DatabaseManager {
     private AppDatabase database;

@@ -18,7 +18,11 @@ import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.domain.TimerManager;
-import spryrocks.com.tristimer.presentation.ui.utils.ScrambleGenerator;
+import spryrocks.com.tristimer.presentation.ui.utils.Scramble2by2Generator;
+import spryrocks.com.tristimer.presentation.ui.utils.Scramble3by3Generator;
+import spryrocks.com.tristimer.presentation.ui.utils.Scramble4by4Generator;
+import spryrocks.com.tristimer.presentation.ui.utils.ScramblePyraminxGenerator;
+import spryrocks.com.tristimer.presentation.ui.utils.ScrambleSkewbGenerator;
 
 public class TimerViewModel extends AndroidViewModel {
     public final TimerModel model = new TimerModel();
@@ -34,11 +38,48 @@ public class TimerViewModel extends AndroidViewModel {
         timerManager = new TimerManager(application);
         databaseManager = new DatabaseManager(application);
 
-        model.scramble.set(ScrambleGenerator.generateScramble());
+        model.scramble.set(getScramble());
         model.timeClick.addCallback(this::timeClick);
         model.deleteClick.addCallback(this::deleteClick);
         model.dnfClick.addCallback(this::dnfClick);
         model.plusTwoClick.addCallback(this::plusTwoClick);
+    }
+
+    public void setScramble() {
+        model.scramble.set(getScramble());
+    }
+    private String getScramble() {
+        String scramble = null;
+        Discipline selectedDiscipline = model.selectedDiscipline;
+        if (selectedDiscipline == null)
+            return Scramble3by3Generator.generateScramble();
+        switch (selectedDiscipline.getName()) {
+            case "3x3":
+                scramble = Scramble3by3Generator.generateScramble();
+                break;
+            case "3x3 OH":
+                scramble = Scramble3by3Generator.generateScramble();
+                break;
+            case "3x3 BLD":
+                scramble = Scramble3by3Generator.generateScramble();
+                break;
+            case "2x2":
+                scramble = Scramble2by2Generator.generateScramble();
+                break;
+            case "4x4":
+                scramble = Scramble4by4Generator.generateScramble();
+                break;
+            case "Skewb":
+                scramble = ScrambleSkewbGenerator.generateScramble();
+                break;
+            case "Pyraminx":
+                scramble = ScramblePyraminxGenerator.generateScramble();
+                break;
+            default:
+                scramble = Scramble3by3Generator.generateScramble();
+                break;
+        }
+        return scramble;
     }
 
     private void deleteClick() {
@@ -76,7 +117,7 @@ public class TimerViewModel extends AndroidViewModel {
         }
     }
 
-    public void showPenaltyError() {
+    private void showPenaltyError() {
         Activity act = activity;
         if (act != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(act);
@@ -110,7 +151,7 @@ public class TimerViewModel extends AndroidViewModel {
         timerManager.stopTimer();
         saveResult();
 
-        String scramble = ScrambleGenerator.generateScramble();
+        String scramble = getScramble();
         model.scramble.set(scramble);
     }
 
@@ -123,10 +164,10 @@ public class TimerViewModel extends AndroidViewModel {
         if (selectedDiscipline == null)
             return;
         Result result = new Result(model.timerTime.get(),
-                                    model.scramble.get(),
-                                    getCurrentDate().getTime(),
-                                    selectedDiscipline.getId(),
-                                    Result.Penalty.PENALTY_OK);
+                model.scramble.get(),
+                getCurrentDate().getTime(),
+                selectedDiscipline.getId(),
+                Result.Penalty.PENALTY_OK);
         databaseManager.insertResult(result);
     }
 

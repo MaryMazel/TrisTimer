@@ -1,22 +1,22 @@
 package spryrocks.com.tristimer.presentation.ui.utils;
 
-public class ScrambleGenerator {
-    private static final String[] faces = { "RX", "LX", "UY", "DY", "FZ", "BZ" };
+public class Scramble4by4Generator {
+    private static final String[] faces = { "RX", "LX", "UY", "DY", "FZ", "BZ", "RwX", "UwY", "FwZ" };
     private static final String[] rotation = { "", "'", "2" };
 
     public static String generateScramble() {
-        String scramble = "";
+        StringBuilder scramble = new StringBuilder();
 
         String penultimateFace = "  ";
         String lastFace = "  ";
 
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < 40; i++) {
             String newFace = randomFace(penultimateFace, lastFace);
-            scramble += newFace.charAt(0) + randomDirection() + " ";
+            scramble.append(newFace, 0, newFace.length() - 1).append(randomDirection()).append(" ");
             penultimateFace = lastFace;
             lastFace = newFace;
         }
-        return scramble;
+        return scramble.toString();
     }
 
     private static String randomFace(String penultimate, String last) {
@@ -27,7 +27,7 @@ public class ScrambleGenerator {
     }
 
     private static boolean sameAxis(String a, String b, String c) {
-        return a.charAt(1) == b.charAt(1) && b.charAt(1) == c.charAt(1);
+        return a.charAt(a.length() - 1) == b.charAt(b.length() - 1) && b.charAt(b.length() - 1) == c.charAt(c.length() - 1);
     }
 
     private static String randomDirection() {
