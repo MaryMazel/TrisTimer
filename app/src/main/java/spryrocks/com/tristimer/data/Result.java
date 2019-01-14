@@ -9,7 +9,7 @@ import android.arch.persistence.room.TypeConverters;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(indices = @Index(value="Discipline id"), foreignKeys = @ForeignKey(entity = Result.class,
+@Entity(indices = @Index(value="Discipline id"), foreignKeys = @ForeignKey(entity = Discipline.class,
                                     parentColumns = "id",
                                     childColumns = "Discipline id",
                                     onDelete = CASCADE))

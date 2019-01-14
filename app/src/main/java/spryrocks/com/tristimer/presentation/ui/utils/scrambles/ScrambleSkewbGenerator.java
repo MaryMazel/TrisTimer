@@ -1,11 +1,7 @@
-package spryrocks.com.tristimer.presentation.ui.utils;
+package spryrocks.com.tristimer.presentation.ui.utils.scrambles;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ScramblePyraminxGenerator {
+public class ScrambleSkewbGenerator {
     private static final String[] faces = { "RX", "LX", "UY", "BZ" };
-    private static final String[] facesLast = { "r", "l", "b", "u" };
     private static final String[] rotation = { "", "'" };
 
     public static String generateScramble() {
@@ -20,29 +16,7 @@ public class ScramblePyraminxGenerator {
             penultimateFace = lastFace;
             lastFace = newFace;
         }
-        return scramble + lastFaces();
-    }
-
-    private static String lastFaces() {
-        StringBuilder scramble = new StringBuilder();
-
-        int number = (int) (Math.random() * 5);
-        if (number == 0) {
-            return "";
-        } else {
-            List<Integer> faces = new ArrayList<>();
-            while (faces.size() < number) {
-                int i = (int) (Math.random() * 4);
-                if (!faces.contains(i)) {
-                    faces.add(i);
-                }
-            }
-            for (Integer face : faces) {
-                int i = Integer.parseInt(face.toString());
-                scramble.append(facesLast[i]).append(randomDirection()).append(" ");
-            }
-            return scramble.toString();
-        }
+        return scramble;
     }
 
     private static String randomFace(String penultimate, String last) {

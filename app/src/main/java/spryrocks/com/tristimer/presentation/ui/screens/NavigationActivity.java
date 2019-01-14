@@ -17,6 +17,7 @@ import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.databinding.NavigationActivityBinding;
 import spryrocks.com.tristimer.presentation.ui.screens.results.ResultsFragment;
 import spryrocks.com.tristimer.presentation.ui.screens.statistics.StatisticsFragment;
+import spryrocks.com.tristimer.presentation.ui.screens.statistics.StatisticsGraphFragment;
 import spryrocks.com.tristimer.presentation.ui.screens.timer.TimerFragment;
 
 public class NavigationActivity extends AppCompatActivity {

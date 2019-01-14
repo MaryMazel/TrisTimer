@@ -19,8 +19,8 @@ public interface ResultDao {
     @Query("DELETE FROM result WHERE id = :resultID")
     void deleteSelectedResults(int resultID);
 
-    @Query("DELETE FROM RESULT")
-    void clearSession();
+    @Query("DELETE FROM RESULT WHERE `Discipline id` = :discipline")
+    void clearSession(int discipline);
 
     @Query("UPDATE result SET time = null, penalty = :penalty WHERE id = :resultID")
     @TypeConverters(EnumConverter.class)

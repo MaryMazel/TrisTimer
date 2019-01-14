@@ -1,7 +1,7 @@
-package spryrocks.com.tristimer.presentation.ui.utils;
+package spryrocks.com.tristimer.presentation.ui.utils.scrambles;
 
-public class Scramble2by2Generator {
-    private static final String[] faces = { "RX", "UY", "FZ" };
+public class Scramble3by3Generator {
+    private static final String[] faces = { "RX", "LX", "UY", "DY", "FZ", "BZ" };
     private static final String[] rotation = { "", "'", "2" };
 
     public static String generateScramble() {
@@ -10,7 +10,7 @@ public class Scramble2by2Generator {
         String penultimateFace = "  ";
         String lastFace = "  ";
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 20; i++) {
             String newFace = randomFace(penultimateFace, lastFace);
             scramble += newFace.charAt(0) + randomDirection() + " ";
             penultimateFace = lastFace;

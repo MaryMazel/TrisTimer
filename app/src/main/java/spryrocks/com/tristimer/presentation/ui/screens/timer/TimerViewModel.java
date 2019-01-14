@@ -18,11 +18,11 @@ import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.domain.TimerManager;
-import spryrocks.com.tristimer.presentation.ui.utils.Scramble2by2Generator;
-import spryrocks.com.tristimer.presentation.ui.utils.Scramble3by3Generator;
-import spryrocks.com.tristimer.presentation.ui.utils.Scramble4by4Generator;
-import spryrocks.com.tristimer.presentation.ui.utils.ScramblePyraminxGenerator;
-import spryrocks.com.tristimer.presentation.ui.utils.ScrambleSkewbGenerator;
+import spryrocks.com.tristimer.presentation.ui.utils.scrambles.Scramble2by2Generator;
+import spryrocks.com.tristimer.presentation.ui.utils.scrambles.Scramble3by3Generator;
+import spryrocks.com.tristimer.presentation.ui.utils.scrambles.Scramble4by4Generator;
+import spryrocks.com.tristimer.presentation.ui.utils.scrambles.ScramblePyraminxGenerator;
+import spryrocks.com.tristimer.presentation.ui.utils.scrambles.ScrambleSkewbGenerator;
 
 public class TimerViewModel extends AndroidViewModel {
     public final TimerModel model = new TimerModel();
@@ -83,11 +83,23 @@ public class TimerViewModel extends AndroidViewModel {
     }
 
     private void deleteClick() {
-        Discipline selectedDiscipline = model.selectedDiscipline;
-        if (selectedDiscipline == null)
-            return;
-        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
-        databaseManager.deleteLastResult(results.get(results.size() - 1));
+        Activity act = activity;
+        if (act != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(act);
+            builder.setMessage("Are you sure you want to delete the last result?")
+                    .setTitle("Confirm action")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", (dialog, which) -> {
+                        Discipline selectedDiscipline = model.selectedDiscipline;
+                        if (selectedDiscipline == null)
+                            return;
+                        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
+                        databaseManager.deleteLastResult(results.get(results.size() - 1));
+                    })
+            .setNegativeButton("Cancel", null);
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     private void dnfClick() {
@@ -97,11 +109,20 @@ public class TimerViewModel extends AndroidViewModel {
         List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
         Result result = results.get(results.size() - 1);
         if (result.getPenalty() == Result.Penalty.PENALTY_OK) {
-            databaseManager.setPenaltyDNF(result, Result.Penalty.PENALTY_DNF);
+            Activity act = activity;
+            if (act != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(act);
+                builder.setMessage("Are you sure you want to set DNF to the last result?")
+                        .setTitle("Confirm action")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", (dialog, which) -> databaseManager.setPenaltyDNF(result, Result.Penalty.PENALTY_DNF))
+                        .setNegativeButton("Cancel", null);
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
         } else {
             showPenaltyError();
         }
-
     }
 
     private void plusTwoClick() {
@@ -111,7 +132,19 @@ public class TimerViewModel extends AndroidViewModel {
         List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
         Result result = results.get(results.size() - 1);
         if (result.getPenalty() == Result.Penalty.PENALTY_OK) {
-            databaseManager.setPenaltyPlusTwo(result, Result.Penalty.PENALTY_PLUSTWO);
+            Activity act = activity;
+            if (act != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(act);
+                builder.setMessage("Are you sure you want to set +2 to the last result?")
+                        .setTitle("Confirm action")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", (dialog, which) -> {
+                            databaseManager.setPenaltyPlusTwo(result, Result.Penalty.PENALTY_PLUSTWO);
+                        })
+                        .setNegativeButton("Cancel", null);
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
         } else {
             showPenaltyError();
         }

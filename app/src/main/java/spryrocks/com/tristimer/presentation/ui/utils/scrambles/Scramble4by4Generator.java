@@ -1,4 +1,4 @@
-package spryrocks.com.tristimer.presentation.ui.utils;
+package spryrocks.com.tristimer.presentation.ui.utils.scrambles;
 
 public class Scramble4by4Generator {
     private static final String[] faces = { "RX", "LX", "UY", "DY", "FZ", "BZ", "RwX", "UwY", "FwZ" };

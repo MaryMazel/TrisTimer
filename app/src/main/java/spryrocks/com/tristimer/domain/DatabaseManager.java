@@ -44,8 +44,8 @@ public class DatabaseManager {
         database.resultDao().deleteSelectedResults(result.getId());
     }
 
-    public void clearSession() {
-        database.resultDao().clearSession();
+    public void clearSession(int discipline) {
+        database.resultDao().clearSession(discipline);
     }
 
     public void setPenaltyDNF(Result result, Result.Penalty penalty) {

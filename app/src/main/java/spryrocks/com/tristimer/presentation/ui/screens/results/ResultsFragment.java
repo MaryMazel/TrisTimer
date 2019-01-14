@@ -1,6 +1,9 @@
 package spryrocks.com.tristimer.presentation.ui.screens.results;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +21,7 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.data.Discipline;
 import spryrocks.com.tristimer.data.Result;
@@ -29,10 +33,10 @@ import spryrocks.com.tristimer.presentation.ui.utils.PrintBitmapBuilder;
 public class ResultsFragment extends Fragment {
     private ResultsAdapter adapter;
     List<Discipline> disciplines;
-    @Nullable Discipline selectedDiscipline;
+    @Nullable
+    Discipline selectedDiscipline;
     DatabaseManager databaseManager;
     Spinner spinner;
-    private View view;
 
     @Nullable
     @Override
@@ -63,7 +67,7 @@ public class ResultsFragment extends Fragment {
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.clearResults:
-                    databaseManager.clearSession();
+                    clearSession();
                     loadData();
                     break;
                 case R.id.clearSelected:
@@ -105,16 +109,37 @@ public class ResultsFragment extends Fragment {
         loadData();
     }
 
-    private void deleteSelectedItems() {
-        List<Result> results = new ArrayList<>();
-        for (ResultsAdapter.ResultItem item : adapter.getItems()) {
-            if (item.selected) {
-                results.add(item.result);
-            }
-        }
-        databaseManager.deleteSelectedResults(results);
+    private void clearSession() {
+        if (selectedDiscipline == null)
+            return;
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage("Are you sure you want to CLEAR SESSION?")
+                .setTitle("Confirm action")
+                .setCancelable(false)
+                .setPositiveButton("Ok", (dialog, which) -> databaseManager.clearSession(selectedDiscipline.getId()))
+                .setNegativeButton("Cancel", null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
-        loadData();
+    private void deleteSelectedItems() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage("Are you sure you want to delete selected items?")
+                .setTitle("Confirm action")
+                .setCancelable(false)
+                .setPositiveButton("Ok", (dialog, which) -> {
+                    List<Result> results = new ArrayList<>();
+                    for (ResultsAdapter.ResultItem item : adapter.getItems()) {
+                        if (item.selected) {
+                            results.add(item.result);
+                        }
+                    }
+                    databaseManager.deleteSelectedResults(results);
+                    loadData();
+                })
+                .setNegativeButton("Cancel", null);
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void initializeSpinner() {
