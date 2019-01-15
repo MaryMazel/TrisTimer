@@ -116,7 +116,10 @@ public class ResultsFragment extends Fragment {
         builder.setMessage("Are you sure you want to CLEAR SESSION?")
                 .setTitle("Confirm action")
                 .setCancelable(false)
-                .setPositiveButton("Ok", (dialog, which) -> databaseManager.clearSession(selectedDiscipline.getId()))
+                .setPositiveButton("Ok", (dialog, which) -> {
+                    databaseManager.clearSession(selectedDiscipline.getId());
+                    loadData();
+                })
                 .setNegativeButton("Cancel", null);
         AlertDialog alert = builder.create();
         alert.show();
@@ -169,7 +172,11 @@ public class ResultsFragment extends Fragment {
 
         sb.append("My ").append(selectedDiscipline.getName()).append(" results").append("\n\n");
         for (int i = 0; i < results.size(); i++) {
-            sb.append(i + 1).append(". ").append(Converters.timeToString(results.get(i).getTime())).append("  ").append(results.get(i).getScramble()).append("  ").append(Formatters.formatDate(results.get(i).getDate())).append("\n");
+            boolean penalty = false;
+            if (results.get(i).getPenalty() == Result.Penalty.PENALTY_DNF) {
+                penalty = true;
+            }
+            sb.append(i + 1).append(". ").append(Converters.timeToString(results.get(i).getTime(), penalty)).append("  ").append(results.get(i).getScramble()).append("  ").append(Formatters.formatDate(results.get(i).getDate())).append("\n");
         }
 
         builder.setTextAlign(PrintBitmapBuilder.ReceiptTextAlign.LEFT);

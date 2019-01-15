@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Converters {
-    public static String timeToString(Long time) {
+    public static String timeToString(Long time, boolean penalty) {
         if (time != null) {
             long millis = (time % 1000) / 10;
             long second = (time / 1000) % 60;
@@ -15,6 +15,8 @@ public class Converters {
                 return String.format(Locale.US, "%02d:%02d.%02d", minute, second, millis);
             else
                 return String.format(Locale.US, "%02d.%02d", second, millis);
+        } else if (penalty){
+            return "DNF";
         } else {
             return "00.00";
         }
