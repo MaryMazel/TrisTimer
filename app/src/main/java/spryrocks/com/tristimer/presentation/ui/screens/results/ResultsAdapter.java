@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import spryrocks.com.tristimer.R;
-import spryrocks.com.tristimer.data.Result;
+import spryrocks.com.tristimer.data.entities.Result;
 import spryrocks.com.tristimer.presentation.ui.utils.Converters;
 import spryrocks.com.tristimer.presentation.ui.utils.Formatters;
 
@@ -55,7 +55,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         if (resultItem.result.getPenalty() == Result.Penalty.PENALTY_DNF) {
             penalty = true;
         }
-        holder.time.setText(Converters.timeToString(resultItem.result.getTime(), penalty));
+        holder.time.setText(Converters.timeToString(resultItem.result.getTime(), penalty, false));
         holder.scramble.setText(resultItem.result.getScramble());
         holder.date.setText(Formatters.formatDate(Converters.timestampToDate(resultItem.result.getDate())));
         holder.view.setBackgroundColor(resultItem.isSelected() ? Color.parseColor("#6501579B"): Color.TRANSPARENT);

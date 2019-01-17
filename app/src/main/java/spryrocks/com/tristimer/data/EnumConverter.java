@@ -2,9 +2,11 @@ package spryrocks.com.tristimer.data;
 
 import android.arch.persistence.room.TypeConverter;
 
-import static spryrocks.com.tristimer.data.Result.Penalty.PENALTY_DNF;
-import static spryrocks.com.tristimer.data.Result.Penalty.PENALTY_OK;
-import static spryrocks.com.tristimer.data.Result.Penalty.PENALTY_PLUSTWO;
+import spryrocks.com.tristimer.data.entities.Result;
+
+import static spryrocks.com.tristimer.data.entities.Result.Penalty.PENALTY_DNF;
+import static spryrocks.com.tristimer.data.entities.Result.Penalty.PENALTY_OK;
+import static spryrocks.com.tristimer.data.entities.Result.Penalty.PENALTY_PLUSTWO;
 
 public class EnumConverter {
     @TypeConverter

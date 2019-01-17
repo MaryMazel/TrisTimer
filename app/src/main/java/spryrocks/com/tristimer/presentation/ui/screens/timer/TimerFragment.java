@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import spryrocks.com.tristimer.R;
-import spryrocks.com.tristimer.data.Discipline;
+import spryrocks.com.tristimer.data.entities.Discipline;
 import spryrocks.com.tristimer.databinding.TimerFragmentBinding;
 
 public class TimerFragment extends Fragment {

@@ -65,7 +65,7 @@
                 android:layout_height="80dip"
                 android:gravity="center_horizontal"
                 android:singleLine="true"
-                android:text="@{Converters.timeToString(model.timerTime, false)}"
+                android:text="@{Converters.timeToString(model.timerTime, false, false)}"
                 android:textColor="@color/colorPrimary"
                 android:textSize="50sp" />
 

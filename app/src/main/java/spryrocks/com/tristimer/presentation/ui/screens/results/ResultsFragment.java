@@ -1,9 +1,7 @@
 package spryrocks.com.tristimer.presentation.ui.screens.results;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import spryrocks.com.tristimer.R;
-import spryrocks.com.tristimer.data.Discipline;
-import spryrocks.com.tristimer.data.Result;
+import spryrocks.com.tristimer.data.entities.Discipline;
+import spryrocks.com.tristimer.data.entities.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.presentation.ui.utils.Converters;
 import spryrocks.com.tristimer.presentation.ui.utils.Formatters;
@@ -118,6 +116,7 @@ public class ResultsFragment extends Fragment {
                 .setCancelable(false)
                 .setPositiveButton("Ok", (dialog, which) -> {
                     databaseManager.clearSession(selectedDiscipline.getId());
+                    databaseManager.setAlltoNull(selectedDiscipline.getId());
                     loadData();
                 })
                 .setNegativeButton("Cancel", null);
@@ -126,6 +125,8 @@ public class ResultsFragment extends Fragment {
     }
 
     private void deleteSelectedItems() {
+        if (selectedDiscipline == null)
+            return;
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage("Are you sure you want to delete selected items?")
                 .setTitle("Confirm action")
@@ -138,6 +139,7 @@ public class ResultsFragment extends Fragment {
                         }
                     }
                     databaseManager.deleteSelectedResults(results);
+                    databaseManager.setAlltoNull(selectedDiscipline.getId());
                     loadData();
                 })
                 .setNegativeButton("Cancel", null);
@@ -176,7 +178,7 @@ public class ResultsFragment extends Fragment {
             if (results.get(i).getPenalty() == Result.Penalty.PENALTY_DNF) {
                 penalty = true;
             }
-            sb.append(i + 1).append(". ").append(Converters.timeToString(results.get(i).getTime(), penalty)).append("  ").append(results.get(i).getScramble()).append("  ").append(Formatters.formatDate(results.get(i).getDate())).append("\n");
+            sb.append(i + 1).append(". ").append(Converters.timeToString(results.get(i).getTime(), penalty, false)).append("  ").append(results.get(i).getScramble()).append("  ").append(Formatters.formatDate(results.get(i).getDate())).append("\n");
         }
 
         builder.setTextAlign(PrintBitmapBuilder.ReceiptTextAlign.LEFT);

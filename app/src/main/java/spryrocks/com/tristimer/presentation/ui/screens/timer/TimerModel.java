@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.spryrocks.android.modules.ui.mvvm.model.OnClickCommand;
 
-import spryrocks.com.tristimer.data.Discipline;
+import spryrocks.com.tristimer.data.entities.Discipline;
 
 public class TimerModel {
     @Nullable

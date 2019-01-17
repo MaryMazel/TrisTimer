@@ -14,28 +14,23 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import spryrocks.com.tristimer.R;
-import spryrocks.com.tristimer.data.Discipline;
-import spryrocks.com.tristimer.data.Result;
+import spryrocks.com.tristimer.data.entities.Discipline;
+import spryrocks.com.tristimer.data.entities.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.presentation.ui.utils.Converters;
 import spryrocks.com.tristimer.presentation.ui.utils.DateAxisValueFormatter;
-import spryrocks.com.tristimer.presentation.ui.utils.Formatters;
 import spryrocks.com.tristimer.presentation.ui.utils.YAxisValueFormatter;
 
 public class StatisticsGraphFragment extends Fragment {
