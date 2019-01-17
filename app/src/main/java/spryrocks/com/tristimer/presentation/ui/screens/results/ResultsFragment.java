@@ -110,6 +110,11 @@ public class ResultsFragment extends Fragment {
     private void clearSession() {
         if (selectedDiscipline == null)
             return;
+        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
+        if (results.size() == 0) {
+            alertNoResults("There is no results yet");
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage("Are you sure you want to CLEAR SESSION?")
                 .setTitle("Confirm action")
@@ -127,6 +132,11 @@ public class ResultsFragment extends Fragment {
     private void deleteSelectedItems() {
         if (selectedDiscipline == null)
             return;
+        List<Result> results1 = databaseManager.getAllResults(selectedDiscipline.getId());
+        if (results1.size() == 0) {
+            alertNoResults("There is no results yet");
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage("Are you sure you want to delete selected items?")
                 .setTitle("Confirm action")
@@ -138,11 +148,24 @@ public class ResultsFragment extends Fragment {
                             results.add(item.result);
                         }
                     }
+                    if (results.size() == 0) {
+                        alertNoResults("You didn't select items");
+                        return;
+                    }
                     databaseManager.deleteSelectedResults(results);
-                    databaseManager.setAlltoNull(selectedDiscipline.getId());
                     loadData();
                 })
                 .setNegativeButton("Cancel", null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void alertNoResults(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage(message)
+                .setTitle("Warning")
+                .setCancelable(false)
+                .setPositiveButton("Ok", null);
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -166,8 +189,10 @@ public class ResultsFragment extends Fragment {
         if (selectedDiscipline == null)
             return;
         @Nullable List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
-        if (results == null)
+        if ((results != null ? results.size() : 0) == 0) {
+            alertNoResults("There is no results yet");
             return;
+        }
 
         PrintBitmapBuilder builder = new PrintBitmapBuilder(context);
         StringBuilder sb = new StringBuilder();

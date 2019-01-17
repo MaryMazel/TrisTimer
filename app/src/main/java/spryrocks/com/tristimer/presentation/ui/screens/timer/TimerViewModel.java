@@ -21,7 +21,6 @@ import spryrocks.com.tristimer.data.entities.Result;
 import spryrocks.com.tristimer.data.entities.Statistics;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.domain.TimerManager;
-import spryrocks.com.tristimer.presentation.ui.utils.Converters;
 import spryrocks.com.tristimer.presentation.ui.utils.scrambles.Scramble2by2Generator;
 import spryrocks.com.tristimer.presentation.ui.utils.scrambles.Scramble3by3Generator;
 import spryrocks.com.tristimer.presentation.ui.utils.scrambles.Scramble4by4Generator;
@@ -41,7 +40,7 @@ public class TimerViewModel extends AndroidViewModel {
         super(application);
         timerManager = new TimerManager(application);
         databaseManager = new DatabaseManager(application);
-
+        model.isTimerRunning.set(false);
         model.scramble.set(getScramble());
         model.timeClick.addCallback(this::timeClick);
         model.deleteClick.addCallback(this::deleteClick);
@@ -49,7 +48,7 @@ public class TimerViewModel extends AndroidViewModel {
         model.plusTwoClick.addCallback(this::plusTwoClick);
     }
 
-    public void setScramble() {
+    void setScramble() {
         model.scramble.set(getScramble());
     }
     private String getScramble() {
@@ -87,6 +86,14 @@ public class TimerViewModel extends AndroidViewModel {
     }
 
     private void deleteClick() {
+        Discipline selectedDiscipline = model.selectedDiscipline;
+        if (selectedDiscipline == null)
+            return;
+        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
+        if (results.size() == 0) {
+            alertNoResults("You have no results yet. You can't delete anything now");
+            return;
+        }
         Activity act = activity;
         if (act != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(act);
@@ -94,12 +101,6 @@ public class TimerViewModel extends AndroidViewModel {
                     .setTitle("Confirm action")
                     .setCancelable(false)
                     .setPositiveButton("Ok", (dialog, which) -> {
-                        Discipline selectedDiscipline = model.selectedDiscipline;
-                        if (selectedDiscipline == null)
-                            return;
-                        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
-                        if (results.size() == 0)
-                            return;
                         databaseManager.deleteLastResult(results.get(results.size() - 1));
                         updateStats();
                     })
@@ -114,8 +115,10 @@ public class TimerViewModel extends AndroidViewModel {
         if (selectedDiscipline == null)
             return;
         List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
-        if (results.size() == 0)
+        if (results.size() == 0) {
+            alertNoResults("You have no results yet. You can't set penalty DNF now");
             return;
+        }
         Result result = results.get(results.size() - 1);
         if (result.getPenalty() == Result.Penalty.PENALTY_OK) {
             Activity act = activity;
@@ -142,8 +145,10 @@ public class TimerViewModel extends AndroidViewModel {
         if (selectedDiscipline == null)
             return;
         List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
-        if (results.size() == 0)
+        if (results.size() == 0) {
+            alertNoResults("You have no results yet. You can't set penalty +2 now");
             return;
+        }
         Result result = results.get(results.size() - 1);
         if (result.getPenalty() == Result.Penalty.PENALTY_OK) {
             Activity act = activity;
@@ -162,6 +167,19 @@ public class TimerViewModel extends AndroidViewModel {
             }
         } else {
             showPenaltyError();
+        }
+    }
+
+    private void alertNoResults(String message) {
+        Activity act = activity;
+        if (act != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(act);
+            builder.setMessage(message)
+                    .setTitle("Warning")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", null);
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     }
 
@@ -188,6 +206,7 @@ public class TimerViewModel extends AndroidViewModel {
 
     private void startTimer() {
         timerManager.startTimer();
+        model.isTimerRunning.set(true);
         mTimer = new Timer();
         MyTimerTask myTimerTask = new MyTimerTask();
         mTimer.schedule(myTimerTask, 0, 10);
@@ -197,6 +216,7 @@ public class TimerViewModel extends AndroidViewModel {
         mTimer.cancel();
         mTimer = null;
         timerManager.stopTimer();
+        model.isTimerRunning.set(false);
         saveResult();
 
         String scramble = getScramble();

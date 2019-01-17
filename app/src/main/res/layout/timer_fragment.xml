@@ -7,6 +7,7 @@
         <import type="spryrocks.com.tristimer.presentation.ui.screens.timer.TimerModel" />
 
         <import type="spryrocks.com.tristimer.presentation.ui.utils.Converters" />
+        <import type="android.view.View"/>
 
         <variable
             name="model"
@@ -77,7 +78,8 @@
                 android:orientation="horizontal"
                 android:layout_marginEnd="50dp"
                 android:layout_marginStart="50dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:visibility="@{model.isTimerRunning ? View.INVISIBLE : View.VISIBLE}">
 
                 <ImageView
                     android:id="@+id/button_delete"
@@ -87,7 +89,7 @@
                     android:src="@drawable/ic_baseline_delete_forever_24px"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{model.deleteClick}"/>
+                    android:onClick="@{model.deleteClick}" />
 
                 <ImageView
                     android:id="@+id/button_plustwo"
