@@ -40,6 +40,8 @@ public class TimerViewModel extends AndroidViewModel {
         super(application);
         timerManager = new TimerManager(application);
         databaseManager = new DatabaseManager(application);
+
+        model.penalty.set(false);
         model.isTimerRunning.set(false);
         model.scramble.set(getScramble());
         model.timeClick.addCallback(this::timeClick);
@@ -102,6 +104,8 @@ public class TimerViewModel extends AndroidViewModel {
                     .setCancelable(false)
                     .setPositiveButton("Ok", (dialog, which) -> {
                         databaseManager.deleteLastResult(results.get(results.size() - 1));
+                        model.timerTime.set(null);
+                        model.penalty.set(false);
                         updateStats();
                     })
             .setNegativeButton("Cancel", null);
@@ -129,6 +133,8 @@ public class TimerViewModel extends AndroidViewModel {
                         .setCancelable(false)
                         .setPositiveButton("Ok", (dialog, which) -> {
                             databaseManager.setPenaltyDNF(result, Result.Penalty.PENALTY_DNF);
+                            model.penalty.set(true);
+                            model.timerTime.set(null);
                             updateStats();
                         })
                         .setNegativeButton("Cancel", null);
@@ -159,6 +165,9 @@ public class TimerViewModel extends AndroidViewModel {
                         .setCancelable(false)
                         .setPositiveButton("Ok", (dialog, which) -> {
                             databaseManager.setPenaltyPlusTwo(result, Result.Penalty.PENALTY_PLUSTWO);
+                            List<Result> newResults = databaseManager.getAllResults(selectedDiscipline.getId());
+                            Result lastResult = newResults.get(newResults.size() - 1);
+                            model.timerTime.set(lastResult.getTime());
                             updateStats();
                         })
                         .setNegativeButton("Cancel", null);
@@ -217,6 +226,7 @@ public class TimerViewModel extends AndroidViewModel {
         mTimer = null;
         timerManager.stopTimer();
         model.isTimerRunning.set(false);
+        model.penalty.set(false);
         saveResult();
 
         String scramble = getScramble();

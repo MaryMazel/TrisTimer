@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/spinner"
                 android:layout_marginEnd="10dp"
+                android:visibility="@{model.isTimerRunning ? View.INVISIBLE : View.VISIBLE}"
                 android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 android:layout_gravity="end"
                 />
@@ -50,6 +51,7 @@
             android:layout_weight="4"
             android:singleLine="false"
             android:maxLines="7"
+            android:visibility="@{model.isTimerRunning ? View.INVISIBLE : View.VISIBLE}"
             android:text="@{model.scramble}"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"/>
@@ -66,7 +68,7 @@
                 android:layout_height="80dip"
                 android:gravity="center_horizontal"
                 android:singleLine="true"
-                android:text="@{Converters.timeToString(model.timerTime, false, false)}"
+                android:text="@{Converters.timeToString(model.timerTime, (model.penalty ? true : false) , false)}"
                 android:textColor="@color/colorPrimary"
                 android:textSize="50sp" />
 

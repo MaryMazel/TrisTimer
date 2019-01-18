@@ -18,4 +18,5 @@ public class TimerModel {
     public final OnClickCommand plusTwoClick = new OnClickCommand();
     public final OnClickCommand dnfClick = new OnClickCommand();
     public ObservableField<Long> timerTime = new ObservableField<>();
+    public ObservableBoolean penalty = new ObservableBoolean();
 }

@@ -1,7 +1,5 @@
 package spryrocks.com.tristimer.presentation.ui.utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -29,16 +27,6 @@ public class Converters {
             long second = (time / 1000) % 60;
             String myTime = String.format(Locale.US, "%02d.%02d", second, millis);
             return Float.parseFloat(myTime);
-    }
-
-    public static Date stringToDate(String date) {
-        try {
-            Locale locale = new Locale("uk");
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", locale);
-            return simpleDateFormat.parse(date);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static Date timestampToDate(long date) {
