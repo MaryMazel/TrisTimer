@@ -17,6 +17,7 @@ import java.util.List;
 
 import spryrocks.com.tristimer.R;
 import spryrocks.com.tristimer.data.entities.Discipline;
+import spryrocks.com.tristimer.data.entities.Result;
 import spryrocks.com.tristimer.data.entities.Statistics;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.presentation.ui.utils.Converters;
@@ -27,6 +28,7 @@ public class StatisticsTextFragment extends Fragment {
     private Discipline selectedDiscipline;
     private List<Discipline> disciplines;
     private DatabaseManager databaseManager;
+    TextView solvesCount;
     TextView best;
     TextView worst;
     TextView sessionMean;
@@ -47,6 +49,7 @@ public class StatisticsTextFragment extends Fragment {
         View view = inflater.inflate(R.layout.statistics_text_fragment, container, false);
         databaseManager = new DatabaseManager(this);
 
+        solvesCount = view.findViewById(R.id.count);
         best = view.findViewById(R.id.best);
         worst = view.findViewById(R.id.worst);
         sessionMean = view.findViewById(R.id.session_mean);
@@ -83,6 +86,7 @@ public class StatisticsTextFragment extends Fragment {
         if (selectedDiscipline == null)
             return;
         Statistics statistics = databaseManager.getStatisticsByDiscipline(selectedDiscipline.getId());
+        solvesCount.setText(getSolvesCount());
         best.setText(Converters.timeToString(statistics.getBest(), false, true));
         worst.setText(Converters.timeToString(statistics.getWorst(), false, true));
         sessionMean.setText(Converters.timeToString(statistics.getSessionMean(), false, true));
@@ -116,4 +120,10 @@ public class StatisticsTextFragment extends Fragment {
         selectedDiscipline = discipline;
     }
 
+    private String getSolvesCount() {
+        if (selectedDiscipline == null)
+            return null;
+        List<Result> results = databaseManager.getAllResults(selectedDiscipline.getId());
+        return String.valueOf(results.size());
+    }
 }

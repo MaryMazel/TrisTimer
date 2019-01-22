@@ -269,8 +269,7 @@ public class TimerViewModel extends AndroidViewModel {
         }
     }
 
-
-    private void updateStats() {
+    public void updateStats() {
         updateBest();
         updateWorst();
         updateAvg3();
@@ -307,11 +306,8 @@ public class TimerViewModel extends AndroidViewModel {
         List<Long> times = getTimes();
         if ((times != null ? times.size() : 0) == 0)
             return;
-        Statistics statistics = databaseManager.getStatisticsByDiscipline(selectedDiscipline.getId());
         Long best = Collections.min(times);
-        if (statistics.getBest() == null || best < statistics.getBest()) {
-            databaseManager.updateBest(best, selectedDiscipline.getId());
-        }
+        databaseManager.updateBest(best, selectedDiscipline.getId());
     }
 
     private void updateWorst() {
@@ -321,11 +317,8 @@ public class TimerViewModel extends AndroidViewModel {
         List<Long> times = getTimes();
         if ((times != null ? times.size() : 0) == 0)
             return;
-        Statistics statistics = databaseManager.getStatisticsByDiscipline(selectedDiscipline.getId());
         Long worst = Collections.max(times);
-        if (statistics.getWorst() == null || worst > statistics.getWorst()) {
-            databaseManager.updateWorst(worst, selectedDiscipline.getId());
-        }
+        databaseManager.updateWorst(worst, selectedDiscipline.getId());
     }
 
     private void updateAvg3() {
@@ -421,7 +414,6 @@ public class TimerViewModel extends AndroidViewModel {
         if ((times != null ? times.size() : 0) == 0)
             return;
         Long currentSessionMean = getCurrentAverage(getLastNTimes(times, times.size()));
-
         databaseManager.updateSessionMean(currentSessionMean, selectedDiscipline.getId());
     }
 

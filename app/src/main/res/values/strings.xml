@@ -16,4 +16,5 @@
     <string name="current">Current</string>
     <string name="best_text">Best</string>
     <string name="you_have_no_results_yet">You have no results yet</string>
+    <string name="solves_number">Solves number:</string>
 </resources>

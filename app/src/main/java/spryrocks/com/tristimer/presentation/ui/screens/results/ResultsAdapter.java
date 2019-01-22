@@ -57,7 +57,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         }
         holder.time.setText(Converters.timeToString(resultItem.result.getTime(), penalty, false));
         holder.scramble.setText(resultItem.result.getScramble());
-        holder.date.setText(Formatters.formatDate(Converters.timestampToDate(resultItem.result.getDate())));
+        holder.date.setText(Formatters.formatDate(resultItem.result.getDate()));
         holder.view.setBackgroundColor(resultItem.isSelected() ? Color.parseColor("#6501579B"): Color.TRANSPARENT);
     }
 

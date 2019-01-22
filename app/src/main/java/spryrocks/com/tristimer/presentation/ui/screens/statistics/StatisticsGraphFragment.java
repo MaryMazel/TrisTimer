@@ -1,10 +1,16 @@
 package spryrocks.com.tristimer.presentation.ui.screens.statistics;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +20,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import spryrocks.com.tristimer.R;
@@ -30,12 +37,11 @@ import spryrocks.com.tristimer.data.entities.Discipline;
 import spryrocks.com.tristimer.data.entities.Result;
 import spryrocks.com.tristimer.domain.DatabaseManager;
 import spryrocks.com.tristimer.presentation.ui.utils.Converters;
-import spryrocks.com.tristimer.presentation.ui.utils.DateAxisValueFormatter;
+import spryrocks.com.tristimer.presentation.ui.utils.Formatters;
 import spryrocks.com.tristimer.presentation.ui.utils.YAxisValueFormatter;
 
 public class StatisticsGraphFragment extends Fragment {
     private Spinner spinner;
-    private Long referenceTimestamp;
     private DatabaseManager databaseManager;
     private View view;
     @Nullable
@@ -43,12 +49,27 @@ public class StatisticsGraphFragment extends Fragment {
 
     private List<Discipline> disciplines;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(mMessageReceiver,
+                new IntentFilter("custom-event-name"));
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("message");
+            Log.d("receiver", "Got message: " + message);
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.statistics_graph, container, false);
         databaseManager = new DatabaseManager(this);
-        referenceTimestamp = (long)0;
         spinner = view.findViewById(R.id.spinner_graph);
         initializeSpinner();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -65,33 +86,34 @@ public class StatisticsGraphFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
+
     public List<Entry> getEntries(List<Result> results) {
         if (results.size() == 0)
-            return new ArrayList<>();
+            return null;
         List<Entry> entries = new ArrayList<>();
-        List<Long> dates = minifyTimestamps(getDates(results));
+        int j = 0;
         for (int i = 0; i < results.size(); i++) {
-            if (results.get(i).getTime() != null)
-            entries.add(new Entry((float) dates.get(i), Converters.timeToFloat(results.get(i).getTime())));
+            if (results.get(i).getTime() != null) {
+                entries.add(new Entry(j, Converters.timeToFloat(results.get(i).getTime())));
+                j++;
+            }
         }
         return entries;
     }
 
-    public List<Long> getDates(List<Result> results) {
-        List<Long> dates = new ArrayList<>();
+    public List<String> getXLabels(List<Result> results) {
+        List<String> dates = new ArrayList<>();
         for (Result result : results) {
-            dates.add(result.getDate());
+            if (result.getTime() != null)
+                dates.add(Formatters.formatDate(Converters.timestampToDate(result.getDate())));
         }
         return dates;
-    }
-
-    public List<Long> minifyTimestamps(List<Long> timestamps) {
-        List<Long> newTs = new ArrayList<>();
-        referenceTimestamp = Collections.min(timestamps);
-        for (Long timestamp : timestamps) {
-            newTs.add(timestamp - referenceTimestamp);
-        }
-        return newTs;
     }
 
     private void refreshChart(Discipline discipline) {
@@ -132,12 +154,21 @@ public class StatisticsGraphFragment extends Fragment {
         xAxis.setDrawGridLines(false);
         xAxis.setAxisLineColor(Color.YELLOW);
         xAxis.setTextColor(Color.WHITE);
-        xAxis.setValueFormatter(new DateAxisValueFormatter(referenceTimestamp));
+
+        List<String> xLabels = getXLabels(results);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return xLabels.get((int) value);
+            }
+        });
         xAxis.setAvoidFirstLastClipping(true);
 
         YAxis yAxis = lineChart.getAxisLeft();
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+
         yAxis.setValueFormatter(new YAxisValueFormatter());
+
         yAxis.setAxisLineColor(Color.YELLOW);
         yAxis.setTextColor(Color.WHITE);
 
@@ -145,7 +176,6 @@ public class StatisticsGraphFragment extends Fragment {
         lineChart.setData(lineData);
         lineChart.invalidate();
     }
-
 
     private void initializeSpinner() {
         disciplines = databaseManager.getAllDisciplines();

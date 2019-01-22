@@ -1,11 +1,14 @@
 package spryrocks.com.tristimer.presentation.ui.screens.timer;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +34,7 @@ public class TimerFragment extends Fragment {
 
         viewModel = ViewModelProviders.of(this).get(TimerViewModel.class);
         viewModel.activity = getActivity();
+        sendMessage();
     }
 
     @Nullable
@@ -54,6 +58,15 @@ public class TimerFragment extends Fragment {
             }
         });
         return binding.getRoot();
+    }
+
+    private void sendMessage() {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent("custom-event-name");
+        // You can also include some extra data.
+        viewModel.updateStats();
+        intent.putExtra("message", "This is my message!");
+        LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent);
     }
 
     @Override
